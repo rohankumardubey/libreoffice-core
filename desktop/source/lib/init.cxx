@@ -10,6 +10,9 @@
 #include <config_buildconfig.h>
 #include <config_features.h>
 
+#include <emscripten.h>
+
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -1373,7 +1376,7 @@ static OUString getGenerator()
     return sGenerator.replaceFirst("%1", os);
 }
 
-extern "C" {
+//extern "C" {
 
 CallbackFlushHandler::TimeoutIdle::TimeoutIdle( CallbackFlushHandler* handler )
     : Timer( "lokit timer callback" )
@@ -7326,7 +7329,9 @@ static int lo_initialize(LibreOfficeKit* pThis, const char* pAppPath, const char
     return bInitialized;
 }
 
-SAL_JNI_EXPORT
+extern "C" {
+
+EMSCRIPTEN_KEEPALIVE
 LibreOfficeKit *libreofficekit_hook_2(const char* install_path, const char* user_profile_url)
 {
     static bool alreadyCalled = false;
@@ -7349,7 +7354,7 @@ LibreOfficeKit *libreofficekit_hook_2(const char* install_path, const char* user
     return static_cast<LibreOfficeKit*>(gImpl);
 }
 
-SAL_JNI_EXPORT
+EMSCRIPTEN_KEEPALIVE
 LibreOfficeKit *libreofficekit_hook(const char* install_path)
 {
     return libreofficekit_hook_2(install_path, nullptr);
